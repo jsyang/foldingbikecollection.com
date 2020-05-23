@@ -12,6 +12,8 @@ values ('front fork'),
        ('stem'),
        ('handlebars'),
        ('seat post'),
+       ('non-folding'),
+       ('separable'),
        ('wheel');
 
 -- Ensure migration is successfully logged

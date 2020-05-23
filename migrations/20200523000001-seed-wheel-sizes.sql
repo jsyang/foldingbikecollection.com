@@ -3,7 +3,7 @@
 
 create table if not exists "wheel_sizes_bsd"
 (
-    bsd integer primary key
+    bsd integer primary key unique
 );
 
 
