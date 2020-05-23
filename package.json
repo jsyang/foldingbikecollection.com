@@ -2,18 +2,17 @@
   "name": "foldingbikecollection.com",
   "version": "1.0.0",
   "description": "Code to generate pages of the foldingbikecollection.com site",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "migrate": "node migrate.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jsyang/foldingbikecollection.com.git"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/jsyang/foldingbikecollection.com/issues"
-  },
-  "homepage": "https://github.com/jsyang/foldingbikecollection.com#readme"
+  "dependencies": {
+    "better-sqlite3": "^7.0.1",
+    "express": "^4.17.1",
+    "knex": "^0.21.1"
+  }
 }
