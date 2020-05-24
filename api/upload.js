@@ -12,7 +12,7 @@ const s3api  = new S3({
     secretAccessKey: AWS_SECRET_ACCESS_KEY
 });
 
-module.exports = app => {
+module.exports = (app, db) => {
     app.put('/api/imageset/upload', async (req, res) => {
         const resUpload = await s3api.upload({
             Bucket: AWS_S3_BUCKET,
@@ -21,8 +21,12 @@ module.exports = app => {
             ACL:    "public-read"
         }).promise();
 
-        console.log(JSON.stringify(resUpload, null, 2));
+        const {Location} = resUpload;
 
-        res.json(resUpload);
+        const id = db.main.prepare(
+            `insert into s3_images (location, created_at) values ('${Location}','${(new Date().toISOString())}')`
+        ).run().lastInsertRowid;
+
+        res.json({id, location: Location});
     });
 };

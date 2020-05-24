@@ -30,8 +30,14 @@ app.get('/sitemap.txt', (req, res) => {
 });
 
 // API
-require('./api/basic')(app, db);
-require('./api/collection')(app, db);
-require('./api/upload')(app);
+const apiDependencies = [app, db];
+
+[
+    require('./api/basic'),
+    require('./api/collection'),
+    require('./api/upload'),
+]
+    .filter(Boolean)
+    .forEach(api => api.apply(null, apiDependencies));
 
 app.listen(PORT);
