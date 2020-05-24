@@ -56,7 +56,6 @@ module.exports = (app, db) => {
 
         let bikes = db.main.prepare(query).all();
 
-        console.log(bikes);
         // Filter by wheel_size_alias
         if (wheel_size_aliases) {
             const matchMandatoryWheelSizes = new Set(db.main.prepare(`
@@ -69,7 +68,8 @@ module.exports = (app, db) => {
             bikes = bikes.filter(b => matchMandatoryWheelSizes.has(b.id));
         }
 
-        res.json(bikes.map(b => {
+        // Add all relevant subfields
+        const finalObject = bikes.map(b => {
             const wheel_sizes = db.main.prepare(`
             select s.wheel_size, sa.name
                 from bike_wheel_sizes s
@@ -84,6 +84,8 @@ module.exports = (app, db) => {
                 wheel_sizes,
                 aliases
             };
-        }));
+        });
+
+        res.json(finalObject);
     });
 };
