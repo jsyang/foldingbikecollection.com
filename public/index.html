@@ -1,9 +1,36 @@
 <html>
-<body>
+<body class="pt-3">
 
+<!--<h2 class="mb-3">FBC - FoldingBikeCollection.com</h2>-->
+<div class="container mw-100">
+    <form onsubmit="uploadFile(event, this.children[0])">
+        <input type="file" class="form-control-file">
+        <input type="submit">
+    </form>
+</div>
 
+<div class="container mw-100">
+    <div class="row">
+        <div class="col-md-3 mb-4" id="find_and_filter">
+            <form class="form-inline mb-4" onsubmit="searchCollectionByTerm(event)">
+                <input class="form-control w-100" type="text" id="search-term" placeholder="Find in FBC...">
+            </form>
+        </div>
+        <div class="col-md-9">
+            <h3 id="search-title" class="text-success">All in collection</h3>
+            <div id="collection"></div>
+        </div>
+    </div>
+</div>
 
+<script src="js/bikes.js"></script>
 <link rel="preload" id="stylesheet" href="css/bootstrap.min.css" as="style" onload="this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="css/bootstrap.min.css"></noscript>
+<noscript>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</noscript>
+<link rel="preload" id="stylesheet" href="css/bikes.css" as="style" onload="this.rel='stylesheet'">
+<noscript>
+    <link rel="stylesheet" href="css/bikes.css">
+</noscript>
 </body>
 </html>
