@@ -14,6 +14,13 @@ const db = {
 
 const app = express();
 
+// Basic rate limiting
+app.use(require("express-slow-down")({
+    windowMs:   3 * 60 * 1000,  // 3 minutes
+    delayAfter: 1000,           // allow 1000 requests per 3 minutes, then...
+    delayMs:    250             // begin adding 250ms of delay per request above 1000
+}));
+
 // Public files
 app.use(express.static('public'));
 
