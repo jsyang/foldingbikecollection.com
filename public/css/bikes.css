@@ -4,3 +4,10 @@
     height: 10rem;
     margin-bottom: 1rem;
 }
+
+#find_and_filter .card-header .badge,
+#find_and_filter .card-body * {
+    user-select: none;
+    cursor: pointer;
+}
+
