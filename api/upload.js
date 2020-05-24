@@ -14,19 +14,32 @@ const s3api  = new S3({
 
 module.exports = (app, db) => {
     app.put('/api/imageset/upload', async (req, res) => {
-        const resUpload = await s3api.upload({
-            Bucket: AWS_S3_BUCKET,
-            Key:    uuid() + '.jpg',
-            Body:   req,
-            ACL:    "public-read"
-        }).promise();
+            const resUpload = await s3api.upload({
+                Bucket: AWS_S3_BUCKET,
+                Key:    uuid() + '.jpg',
+                Body:   req,
+                ACL:    "public-read"
+            }).promise();
 
-        const {Location} = resUpload;
+            const {Location} = resUpload;
 
-        const id = db.main.prepare(
-            `insert into s3_images (location, created_at) values ('${Location}','${(new Date().toISOString())}')`
-        ).run().lastInsertRowid;
+            let batchIDColumnClause = '';
+            let batchIDValuesClause = '';
+            if (req.query.batch_id) {
+                batchIDColumnClause = `, batch_id`;
+                batchIDValuesClause = `, '${decodeURIComponent(req.query.batch_id)}'`;
+            }
 
-        res.json({id, location: Location});
+            const id = db.main.prepare(
+                `insert into s3_images (location, created_at${batchIDColumnClause}) values ('${Location}','${(new Date().toISOString())}'${batchIDValuesClause})`
+            ).run().lastInsertRowid;
+
+            res.json({id, location: Location});
+        }
+    );
+
+    app.get('/api/imageset/all', (req, res) => {
+        const s3Images = db.main.prepare('select * from s3_images').all();
+        res.json(s3Images);
     });
 };

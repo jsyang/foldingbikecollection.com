@@ -65,6 +65,7 @@ module.exports = (app, db) => {
             where sa.id in (${wheel_size_aliases.join(',')})`
             ).pluck().all().map(Number));
 
+            // Intersection of search result and wheel size filter
             bikes = bikes.filter(b => matchMandatoryWheelSizes.has(b.id));
         }
 

@@ -1,0 +1,13 @@
+.multiple-file-upload-drop .message {
+    float: left;
+    width: 100%;
+    height: 20rem;
+    margin-bottom: 1rem;
+}
+
+#images img {
+    width: calc(25vw - 4rem); /* You can set the dimensions to whatever you want */
+    height: calc(25vw - 4rem);
+    margin: 2rem;
+    object-fit: cover;
+}

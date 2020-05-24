@@ -147,4 +147,5 @@ async function onDOMContentLoaded() {
     await updateCollection();
 }
 
+// Entrypoint
 window.addEventListener('DOMContentLoaded', onDOMContentLoaded);
