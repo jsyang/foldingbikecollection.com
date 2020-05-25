@@ -3,6 +3,11 @@ Code to generate pages of the foldingbikecollection.com site
 
 ### Helpful notes
 - [sql.js for in-browser read-only queries to reduce load](https://github.com/sql-js/sql.js)
+- [SQLite for web apps](https://stackoverflow.com/a/62220/7216921)
+    - USE TRANSACTIONS FOR WRITES
+    - Queue transactions up
+    - Then flush them periodically (COMMIT)
+    
 
 #### `better-sqlite3`
 - [better-sqlite3 help notes](https://github.com/JoshuaWise/better-sqlite3/issues/125)
