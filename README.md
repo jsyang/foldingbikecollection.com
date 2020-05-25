@@ -7,7 +7,7 @@ Code to generate pages of the foldingbikecollection.com site
     - USE TRANSACTIONS FOR WRITES
     - Queue transactions up
     - Then flush them periodically (COMMIT)
-    
+    - Use [write ahead logging (WAL)](https://www.sqlite.org/wal.html) with statement `PRAGMA journal_mode=WAL;`
 
 #### `better-sqlite3`
 - [better-sqlite3 help notes](https://github.com/JoshuaWise/better-sqlite3/issues/125)
