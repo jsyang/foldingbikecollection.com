@@ -5,9 +5,62 @@
     margin-bottom: 1rem;
 }
 
-#images img {
-    width: calc(25vw - 4rem); /* You can set the dimensions to whatever you want */
-    height: calc(25vw - 4rem);
-    margin: 2rem;
-    object-fit: cover;
+#images .image {
+    display: inline-block;
+    position: relative;
+    width: calc(50% - 2rem);
+    padding-top: calc(50% - 2rem);
+    margin: 1rem;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: opacity .4s ease;
+    opacity: 0;
+}
+
+#images .image.loaded {
+    opacity: 1;
+}
+
+@media only screen and (min-width: 576px) {
+    #images .image {
+        width: calc(33.333% - 2rem);
+        padding-top: calc(33.333% - 2rem);
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    #images .image {
+        width: calc(25% - 2rem);
+        padding-top: calc(25% - 2rem);
+    }
+}
+
+/* Spinner from https://loading.io/css/ */
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

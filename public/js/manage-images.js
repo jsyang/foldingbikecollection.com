@@ -57,12 +57,19 @@ function onDrop(e) {
         });
 }
 
+const lazyLoader = new LazyLoad({elements_selector: ".lazy", threshold: 0});
+
 // Update management gallery
 async function updateImagesQuery() {
     const images = await (fetch('/api/imageset/all')
         .then(res => res.json()));
 
-    document.getElementById('images').innerHTML = images.reduce((html, img) => html + `<img src="${img.location}">`, '');
+    document.getElementById('images').innerHTML = images.reduce((html, img) => html +
+        `<div class="image lazy" data-bg="${img.location}"></div>`,
+        ''
+    );
+
+    lazyLoader.update();
 }
 
 async function onDOMContentLoaded() {

@@ -2,6 +2,7 @@ const {
           AWS_ACCESS_KEY_ID,
           AWS_SECRET_ACCESS_KEY,
           AWS_S3_BUCKET,
+          PAGE_SIZE = 30
       } = process.env;
 
 const {uuid} = require('uuidv4');
@@ -31,7 +32,7 @@ module.exports = (app, db) => {
             }
 
             const id = db.main.prepare(
-                `insert into s3_images (location, created_at${batchIDColumnClause}) values ('${Location}','${(new Date().toISOString())}'${batchIDValuesClause})`
+                `insert into s3_files (location, created_at${batchIDColumnClause}) values ('${Location}','${(new Date().toISOString())}'${batchIDValuesClause})`
             ).run().lastInsertRowid;
 
             res.json({id, location: Location});
@@ -39,7 +40,12 @@ module.exports = (app, db) => {
     );
 
     app.get('/api/imageset/all', (req, res) => {
-        const s3Images = db.main.prepare('select * from s3_images').all();
+        const {page = 0} = req.query;
+
+        const pageClause = `limit ${PAGE_SIZE} offset ${page * PAGE_SIZE}`;
+
+        const s3Images = db.main.prepare(`select * from s3_files ${pageClause}`).all();
+
         res.json(s3Images);
     });
 };

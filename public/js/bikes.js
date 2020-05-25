@@ -130,6 +130,8 @@ function onChangeFilterOption(e) {
     if (findAndFilters[optionType].length === 0) {
         delete findAndFilters[optionType];
     }
+
+    updateCollection();
 }
 
 function addToggleFilterOption(checkboxEl) {

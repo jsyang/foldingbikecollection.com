@@ -1,29 +1,22 @@
 <html>
-<body class="pt-3">
-
-<h2 class="mb-3">FBC - Upload resource</h2>
-
+<head><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body class="pt-3" ondrop="onDrop(event)" ondragover="onDragOver(event)">
 <div class="container mw-100">
-<!--    <form onsubmit="submitSingleFile(event, this.children[0])">-->
-<!--        <input type="file" class="form-control-file">-->
-<!--        <input type="submit">-->
-<!--    </form>-->
-    <div class="card multiple-file-upload-drop" ondrop="onDrop(event)" ondragover="onDragOver(event)">
-        <div class="message">Drop files here</div>
+    <!--    <form onsubmit="submitSingleFile(event, this.children[0])">-->
+    <!--        <input type="file" class="form-control-file">-->
+    <!--        <input type="submit">-->
+    <!--    </form>-->
+    <div class="card">
+        <div class="card-header">Manage unassociated images</div>
+        <div class="card-body">Drag and drop files into this window to upload to S3 bucket for FBC.</div>
     </div>
-
     <div id="images">
     </div>
 </div>
 
-<script src="js/manage-images.js"></script>
-<link rel="preload" id="stylesheet" href="css/bootstrap.min.css" as="style" onload="this.rel='stylesheet'">
-<noscript>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-</noscript>
-<link rel="preload" id="stylesheet" href="css/upload.css" as="style" onload="this.rel='stylesheet'">
-<noscript>
-    <link rel="stylesheet" href="css/upload.css">
-</noscript>
+<script src="js/lazyload.min.js" defer></script>
+<script src="js/manage-images.js" defer></script>
+<link rel="stylesheet" href="css/bootstrap.min.css"/>
+<link rel="stylesheet" href="css/upload.css"/>
 </body>
 </html>

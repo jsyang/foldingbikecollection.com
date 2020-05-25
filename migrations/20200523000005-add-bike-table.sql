@@ -16,11 +16,11 @@ values (1, 'Brompton S1E', 2),
 -- e.g. Raleigh Chopper
 create table if not exists "bike_wheel_sizes"
 (
-    id         integer primary key autoincrement,
     bike       integer,
     wheel_size integer,
     foreign key (bike) references bikes (id),
-    foreign key (wheel_size) references wheel_sizes_bsd (bsd)
+    foreign key (wheel_size) references wheel_sizes_bsd (bsd),
+    primary key (bike, wheel_size)
 );
 
 insert into bike_wheel_sizes (bike, wheel_size)
