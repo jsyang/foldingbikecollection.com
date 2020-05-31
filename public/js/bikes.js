@@ -1,11 +1,14 @@
 const ORIGIN = '//localhost:3000/api';
+let findAndFilters;
 
 function getFilterOptionsByTableName(tableName) {
     return fetch(`${ORIGIN}/${tableName}`).then(res => res.json());
 }
 
-async function addFilter(filterName, displayName, optionValueKey = 'id') {
+async function addFilter(filterName, displayName) {
     const filterOptions = await getFilterOptionsByTableName(filterName);
+
+    const checkedOptions = findAndFilters[filterName] || [];
 
     const filtersHTML = filterOptions.reduce((html, option) => html + `
         <div class="form-check">
@@ -15,7 +18,9 @@ async function addFilter(filterName, displayName, optionValueKey = 'id') {
                 data-type="${filterName}" 
                 data-label="${option.name}" 
                 id="filter_${filterName}_${option.id}" 
-                value="${option[optionValueKey]}"
+                value="${option.id}"
+                onchange="onChangeFilterOption(event)"
+                ${checkedOptions.includes(option.id) ? 'checked' : ''}
             />
             <label class="form-check-label w-100" for="filter_${filterName}_${option.id}">${option.name}</label>
         </div>`
@@ -28,29 +33,37 @@ async function addFilter(filterName, displayName, optionValueKey = 'id') {
                 ${filtersHTML}
             </div>
         </div>`;
-}
 
-const findAndFilters = {};
+
+    const cardEl = document.getElementById(`filter_${filterName}`);
+    filterOptions
+        .filter(o => checkedOptions.includes(o.id))
+        .forEach(o => addBadge(cardEl, o.id, o.name, false));
+}
 
 function normalizeOptionValuesForQuery(params, optionType) {
     if (params[optionType]) {
-        params[optionType] = params[optionType].map(v => parseInt(v));
+        params[optionType] = Array.from(new Set(params[optionType].map(v => parseInt(v))));
     }
 }
 
 function queryCollection() {
-    // Deep clone
+    // Deep clone: might not be needed
     const params = JSON.parse(JSON.stringify(findAndFilters));
 
     normalizeOptionValuesForQuery(params, 'brands');
     normalizeOptionValuesForQuery(params, 'wheel_size_aliases');
+
+    const paramsJSONString = JSON.stringify(params);
+
+    localStorage.setItem('filter', paramsJSONString);
 
     return fetch(
         `${ORIGIN}/collection/query`,
         {
             method:  'POST',
             headers: {'Content-Type': 'application/json'},
-            body:    JSON.stringify(params)
+            body:    paramsJSONString
         }).then(res => res.json());
 }
 
@@ -65,11 +78,11 @@ async function updateCollection() {
         const akaHTML        = aliases.length > 0 ? `<div>Also known by: ${aliases.join(', ')}</div>` : '';
 
         return collectionHTML + `
-        <div class="bike" id="collection_item_${bike.id}">
+        <a href="bike.html#${bike.id}"><div class="bike" id="collection_item_${bike.id}">
             <h4>${bike.name}</h4>
             ${wheelSizesHTML}
             ${akaHTML}
-        </div>`
+        </div></a>`
     }, '');
 }
 
@@ -92,30 +105,45 @@ async function searchCollectionByTerm(event) {
     await updateCollection();
 }
 
+function onBadgeClick(event) {
+    const badge       = event.target;
+    const optionValue = badge.getAttribute('data-value');
+    const checkbox    = badge.closest('.card').querySelector(`input[value="${optionValue}"]`);
+    checkbox.click();
+    badge.remove();
+}
+
+function addBadge(el, optionValue, optionLabel, shouldAnimate = true) {
+    const cardHeaderBadgeContainer = el.closest('.card').querySelector('.active-options');
+
+    const badge = document.createElement('span');
+    badge.setAttribute('class', "badge badge-pill badge-primary mr-1 mb-1 " + (shouldAnimate ? '' : 'animate-in'));
+    badge.setAttribute('data-value', optionValue);
+    badge.setAttribute('onclick', "onBadgeClick(event)");
+    badge.innerHTML = optionLabel;
+
+    cardHeaderBadgeContainer.prepend(badge);
+
+    if (shouldAnimate) {
+        setTimeout(() => badge.classList.add('animate-in'), 0);
+    }
+}
+
 function onChangeFilterOption(e) {
     const el          = e.target;
     const {checked}   = el;
     const optionType  = el.getAttribute('data-type');
-    const optionValue = el.value;
+    const optionValue = parseInt(el.value);
     const optionLabel = el.getAttribute('data-label');
 
-    const cardHeaderBadgeContainer = el.closest('.card').querySelector('.active-options');
-
-    const foundBadge = Array.from(cardHeaderBadgeContainer.children)
-        .find(badgeEl => badgeEl.getAttribute('data-value') === optionValue);
-
-    findAndFilters[optionType] = findAndFilters[optionType] || [];
+    const foundBadge = el.closest('.card').querySelector(`.active-options span[data-value="${optionValue}"]`);
 
     if (checked) {
         if (!foundBadge) {
-            const badge = document.createElement('span');
-            badge.setAttribute('class', "badge badge-pill badge-primary mr-1 mb-1");
-            badge.setAttribute('data-value', optionValue);
-            badge.innerHTML = optionLabel;
-            cardHeaderBadgeContainer.appendChild(badge);
-            badge.addEventListener('click', () => el.click());
+            addBadge(el, optionValue, optionLabel);
         }
 
+        findAndFilters[optionType] = findAndFilters[optionType] || [];
         findAndFilters[optionType].push(optionValue);
         findAndFilters[optionType] = Array.from(new Set(findAndFilters[optionType]));
     } else {
@@ -123,7 +151,7 @@ function onChangeFilterOption(e) {
             foundBadge.remove();
         }
 
-        findAndFilters[optionType] = findAndFilters[optionType].filter(v => v !== optionValue);
+        findAndFilters[optionType] = (findAndFilters[optionType] || []).filter(v => v !== optionValue);
     }
 
     // Don't include in search if no options given
@@ -134,17 +162,15 @@ function onChangeFilterOption(e) {
     updateCollection();
 }
 
-function addToggleFilterOption(checkboxEl) {
-    checkboxEl.addEventListener('change', onChangeFilterOption);
-}
-
 async function onDOMContentLoaded() {
+    try {
+        findAndFilters = JSON.parse(localStorage.getItem('filter')) || {};
+    } catch (e) {
+        console.log('Error parsing saved filters!');
+    }
+
     await addFilter('brands', 'Brand');
     await addFilter('wheel_size_aliases', 'Wheel size');
-
-    document.getElementById('find_and_filter').querySelectorAll('[type=checkbox]').forEach(
-        addToggleFilterOption
-    );
 
     await updateCollection();
 }

@@ -2,8 +2,20 @@
     float: left;
     width: 100%;
     height: 10rem;
-    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-bottom: #ccc 1px solid;
+    cursor: pointer;
 }
+
+#collection .bike:last-child {
+    border-bottom: none;
+}
+
+#collection .bike:hover {
+    background-color: #eee;
+}
+
+/*FILTERS*/
 
 #find_and_filter .card-header .badge,
 #find_and_filter .card-body * {
@@ -11,3 +23,20 @@
     cursor: pointer;
 }
 
+#find_and_filter .active-options {
+    max-height: 1.5rem;
+    padding-top: 0.2rem;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#find_and_filter .badge {
+    transition: max-width 0.5s ease;
+    max-width: 0;
+    overflow: hidden;
+}
+
+#find_and_filter .badge.animate-in {
+    max-width: 100%;
+}
