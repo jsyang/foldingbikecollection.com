@@ -1,6 +1,9 @@
 # foldingbikecollection.com
 Code to generate pages of the foldingbikecollection.com site
 
+- Steal blurbs for Why here:
+    - https://justyna.typepad.com/bike_chicago/folding_bikes/
+
 ### Helpful notes
 - [sql.js for in-browser read-only queries to reduce load](https://github.com/sql-js/sql.js)
 - [SQLite for web apps](https://stackoverflow.com/a/62220/7216921)
